@@ -3,7 +3,7 @@ package ru.yandex.practicum.sleeptracker;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.Period;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.LongStream;
 
@@ -25,7 +25,7 @@ public class SleeplessNightsAnalyzer implements SleepAnalyzer {
                 ? lastEnd.toLocalDate().minusDays(1)
                 : lastEnd.toLocalDate();
 
-        long totalNights = Period.between(firstNightDate, lastNightDate.plusDays(1)).getDays();
+        long totalNights = ChronoUnit.DAYS.between(firstNightDate, lastNightDate.plusDays(1));
 
         long sleeplessNightsCount = LongStream.range(0, totalNights)
                 .mapToObj(firstNightDate::plusDays)

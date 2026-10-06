@@ -149,4 +149,59 @@ class SleepTrackerAppTest {
         );
         assertEquals("Голубь", new ChronotypeAnalyzer().apply(sessions).getValue().toString());
     }
+
+    @Test
+    void testSleeplessNightsAcrossMultipleMonths() {
+        List<SleepingSession> sessions = List.of(
+                new SleepingSession(LocalDateTime.of(2025, 10, 1, 23, 0), LocalDateTime.of(2025, 10, 2, 7, 0), SleepQuality.GOOD),
+                new SleepingSession(LocalDateTime.of(2025, 12, 1, 23, 0), LocalDateTime.of(2025, 12, 2, 7, 0), SleepQuality.GOOD)
+        );
+        assertEquals(60L, new SleeplessNightsAnalyzer().apply(sessions).getValue());
+    }
+
+    @Test
+    void testChronotypeOwlLogic() {
+        ChronotypeAnalyzer analyzer = new ChronotypeAnalyzer();
+
+        List<SleepingSession> owl1 = List.of(
+                new SleepingSession(
+                        LocalDateTime.of(2025, 10, 1, 23, 30),
+                        LocalDateTime.of(2025, 10, 2, 9, 30),
+                        SleepQuality.GOOD
+                )
+        );
+
+        List<SleepingSession> owl2 = List.of(
+                new SleepingSession(
+                        LocalDateTime.of(2025, 10, 2, 1, 0),
+                        LocalDateTime.of(2025, 10, 2, 11, 0),
+                        SleepQuality.GOOD
+                )
+        );
+
+        assertEquals("Сова", analyzer.apply(owl1).getValue().toString());
+        assertEquals("Сова", analyzer.apply(owl2).getValue().toString());
+    }
+
+    @Test
+    void testSleeplessNightsStartingAfterMidnight() {
+
+        List<SleepingSession> sessions = List.of(
+                new SleepingSession(
+                        LocalDateTime.of(2025, 10, 2, 1, 0),
+                        LocalDateTime.of(2025, 10, 2, 7, 0),
+                        SleepQuality.GOOD
+                ),
+                new SleepingSession(
+                        LocalDateTime.of(2025, 10, 4, 0, 30),
+                        LocalDateTime.of(2025, 10, 4, 7, 0),
+                        SleepQuality.GOOD
+                )
+        );
+
+        SleeplessNightsAnalyzer analyzer = new SleeplessNightsAnalyzer();
+        SleepAnalysisResult result = analyzer.apply(sessions);
+
+        assertEquals(1L, result.getValue());
+    }
 }

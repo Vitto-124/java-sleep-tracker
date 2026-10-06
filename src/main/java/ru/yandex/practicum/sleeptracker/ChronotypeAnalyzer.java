@@ -57,7 +57,8 @@ public class ChronotypeAnalyzer implements SleepAnalyzer {
         LocalTime start = session.getStartTime().toLocalTime();
         LocalTime end = session.getEndTime().toLocalTime();
 
-        boolean isOwl = start.isAfter(LocalTime.of(23, 0)) && end.isAfter(LocalTime.of(9, 0));
+        int startHour = (start.getHour() < 12) ? start.getHour() + 24 : start.getHour();
+        boolean isOwl = startHour >= 23 && !end.isBefore(LocalTime.of(9, 0));
         boolean isLark = start.isBefore(LocalTime.of(22, 0)) && end.isBefore(LocalTime.of(7, 0));
 
         if (isOwl) {
